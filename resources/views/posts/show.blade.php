@@ -4,22 +4,37 @@
 
 @section('content')
 
-    <div class="bg-white rounded shadow p-6">
-        <h1 class="text-2xl font-bold mb-4">{{ $post->title }}</h1>
-        <p class="text-gray-700 leading-relaxed">{{ $post->body }}</p>
-        <small class="text-gray-400 mt-4 block">{{ $post->created_at->format('d.m.Y') }}</small>
+    <div class="article-header">
+        <span class="article-tag">Yazı</span>
+        <h1 class="article-title">{{ $post->title }}</h1>
+        <div class="article-meta">
+            <span>{{ $post->created_at->format('d M Y') }}</span>
+            <div class="article-divider"></div>
+            <span>No. {{ str_pad($post->id, 3, '0', STR_PAD_LEFT) }}</span>
+            @if($post->updated_at > $post->created_at)
+                <div class="article-divider"></div>
+                <span>Güncellendi {{ $post->updated_at->format('d M Y') }}</span>
+            @endif
+        </div>
+    </div>
 
-        <div class="flex gap-4 mt-6">
-            <a href="/posts/{{ $post->id }}/edit" class="text-blue-600">Düzenle</a>
+    <div class="article-body">
+        <p>{{ $post->body }}</p>
+    </div>
 
+    @auth
+        <div class="action-row">
+            <a href="/posts/{{ $post->id }}/edit" class="btn-outline">Düzenle</a>
             <form action="/posts/{{ $post->id }}" method="POST">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="text-red-500">Sil</button>
+                <button type="submit" class="btn-danger">Sil</button>
             </form>
-
-            <a href="/posts" class="text-gray-500">Geri dön</a>
         </div>
+    @endauth
+
+    <div style="margin-top: 2rem;">
+        <a href="/posts" class="btn-outline">← Tüm yazılar</a>
     </div>
 
 @endsection
